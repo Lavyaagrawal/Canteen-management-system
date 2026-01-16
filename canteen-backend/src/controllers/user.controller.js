@@ -37,12 +37,15 @@ exports.sendOTP = async (req, res) => {
 
 exports.register = async (req, res) => {
   try {
+    console.log('Registration request received:', req.body);
     const { phone, fullname, password, student_id } = req.body;
     
     // Validate required fields
     if (!phone || !fullname || !password || !student_id) {
+      console.log('Validation failed - missing fields');
       return res.status(400).json({ 
-        detail: 'All fields are required (phone, fullname, password, student_id)' 
+        detail: 'All fields are required (phone, fullname, password, student_id)',
+        received: { phone: !!phone, fullname: !!fullname, password: !!password, student_id: !!student_id }
       });
     }
     
@@ -57,13 +60,14 @@ exports.register = async (req, res) => {
     // Temporary response - implement proper user creation
     res.status(201).json({
       message: 'User registered successfully',
-      access: 'temp_token', // Replace with actual JWT
-      refresh: 'temp_refresh_token' // Replace with actual refresh token
+      access: 'temp_token_' + Date.now(), // Temporary token
+      refresh: 'temp_refresh_token_' + Date.now() // Temporary refresh token
     });
   } catch (error) {
     console.error('Register Error:', error);
     res.status(500).json({ 
-      detail: 'Registration failed: ' + error.message 
+      detail: 'Registration failed: ' + error.message,
+      error: error.toString()
     });
   }
 };
