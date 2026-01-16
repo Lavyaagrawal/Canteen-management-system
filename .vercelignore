@@ -6,3 +6,5 @@ canteen-backend
 *.log
 .DS_Store
 yearn.lock
+package-lock.json
+package.json
