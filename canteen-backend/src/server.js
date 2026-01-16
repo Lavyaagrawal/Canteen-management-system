@@ -4,32 +4,24 @@ const routes = require('./routes');
 
 const app = express();
 
-// CORS Configuration
-const allowedOrigins = [
-  'https://canteen-management-system-f90aanhw0-lavya-agrawal-s-projects.vercel.app',
-  'http://localhost:5501',
-  'http://localhost:3000',
-  'http://127.0.0.1:5501'
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+// CORS Configuration - Allow all origins
+const corsOptions = {
+  origin: '*', // Allow all origins
+  credentials: false, // Must be false when using wildcard
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
 
-// Handle OPTIONS requests (preflight)
-app.options('*', cors());
+app.use(cors(corsOptions));
+
+// Handle OPTIONS requests (preflight) - must be before routes
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.sendStatus(200);
+});
 
 // Body parsing middleware
 app.use(express.json());
