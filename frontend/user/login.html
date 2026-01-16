@@ -164,7 +164,9 @@
     }
 
     try {
-      const response = await fetch('/api/users/login/', {
+      // Use Railway backend URL directly (bypassing Vercel rewrites)
+      const API_BASE = 'https://canteen-management-system-production-bfe6.up.railway.app';
+      const response = await fetch(`${API_BASE}/api/users/login/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
