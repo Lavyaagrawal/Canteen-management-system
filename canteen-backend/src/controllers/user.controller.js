@@ -1,40 +1,3 @@
-// Temporary OTP storage (use database in production)
-const otpStore = new Map();
-
-exports.sendOTP = async (req, res) => {
-  try {
-    const { phone } = req.body;
-    
-    if (!phone) {
-      return res.status(400).json({ 
-        detail: 'Phone number is required' 
-      });
-    }
-    
-    // Generate 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    
-    // Store OTP (expires in 10 minutes)
-    otpStore.set(phone, {
-      otp,
-      expiresAt: Date.now() + 10 * 60 * 1000 // 10 minutes
-    });
-    
-    // TODO: Send OTP via SMS/Email service
-    // For now, log it for testing (remove in production!)
-    console.log(`OTP for ${phone}: ${otp}`);
-    
-    res.status(200).json({ 
-      message: 'OTP sent successfully' 
-    });
-  } catch (error) {
-    console.error('Send OTP Error:', error);
-    res.status(500).json({ 
-      detail: 'Failed to send OTP. Please try again.' 
-    });
-  }
-};
-
 exports.register = async (req, res) => {
   try {
     console.log('Registration request received:', req.body);
@@ -68,6 +31,39 @@ exports.register = async (req, res) => {
     res.status(500).json({ 
       detail: 'Registration failed: ' + error.message,
       error: error.toString()
+    });
+  }
+};
+
+exports.login = async (req, res) => {
+  try {
+    console.log('Login request received:', req.body);
+    const { phone, password } = req.body;
+    
+    // Validate required fields
+    if (!phone || !password) {
+      return res.status(400).json({ 
+        detail: 'Phone number and password are required' 
+      });
+    }
+    
+    // TODO: Check user in database
+    // TODO: Verify password with bcrypt
+    // TODO: Generate JWT tokens
+    
+    // For now, return success (implement database logic later)
+    console.log('User login attempt:', { phone });
+    
+    // Temporary response - implement proper authentication
+    res.status(200).json({
+      message: 'Login successful',
+      access: 'temp_token_' + Date.now(),
+      refresh: 'temp_refresh_token_' + Date.now()
+    });
+  } catch (error) {
+    console.error('Login Error:', error);
+    res.status(500).json({ 
+      detail: 'Login failed: ' + error.message 
     });
   }
 };

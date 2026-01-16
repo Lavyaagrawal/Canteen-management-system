@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user.controller');
 
-// Send OTP endpoint
-router.post('/send-otp/', userController.sendOTP);
-
-// Register endpoint
+// Register endpoint (no OTP required)
 router.post('/register/', userController.register);
+
+// Login endpoint
+router.post('/login/', userController.login);
 
 module.exports = router;

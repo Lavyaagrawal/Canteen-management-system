@@ -43,15 +43,20 @@ app.get('/', (req, res) => {
   });
 });
 
-// Error handling middleware
+// Error handling middleware (must be after routes)
 app.use((err, req, res, next) => {
+  // Don't send error response if headers already sent
+  if (res.headersSent) {
+    return next(err);
+  }
+  
   console.error('Error:', err.stack);
   res.status(err.status || 500).json({ 
     detail: err.message || 'Internal server error' 
   });
 });
 
-// 404 handler
+// 404 handler (must be last)
 app.use((req, res) => {
   res.status(404).json({ 
     detail: `Route ${req.method} ${req.path} not found` 

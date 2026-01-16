@@ -129,45 +129,22 @@
             margin-top: 0.5rem;
             display: none;
         }
-        .otp-section {
-            display: none;
+        .password-input {
+            position: relative;
         }
-        .otp-inputs {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-            margin-bottom: 1rem;
+        .password-input input {
+            padding-right: 3rem;
         }
-        .otp-input {
-            width: 40px;
-            height: 40px;
-            text-align: center;
-            font-size: 1.2rem;
-            border: 1.5px solid #e0e0e0;
-            border-radius: 8px;
-            background: #fafafa;
-        }
-        .otp-input:focus {
-            border-color: #ff6600;
-            outline: none;
-        }
-        .resend-otp {
-            text-align: center;
-            margin-top: 1rem;
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
             color: #666;
-        }
-        .resend-otp a {
-            color: #ff6600;
-            text-decoration: none;
-            font-weight: 600;
             cursor: pointer;
-        }
-        .resend-otp a:hover {
-            text-decoration: underline;
-        }
-        .timer {
-            color: #ff6600;
-            font-weight: 600;
+            padding: 0.5rem;
         }
     </style>
 </head>
@@ -190,67 +167,63 @@
             </div>
             <!-- Login Tab -->
             <div class="tab-content" id="login-content">
-                <form id="login-form" class="auth-form" onsubmit="handleLoginPhone(event)">
+                <form id="login-form" class="auth-form">
                     <div class="form-group">
                         <label class="form-label">Phone Number</label>
                         <input type="tel" class="form-input" id="login-phone" placeholder="Enter your phone number" required pattern="[0-9]{10}">
                         <div class="error-message" id="login-phone-error">Please enter a valid 10-digit phone number</div>
                     </div>
-                    <button type="submit" class="auth-btn">Continue</button>
-                </form>
-                <div id="login-otp-section" class="otp-section">
                     <div class="form-group">
-                        <label class="form-label">Enter OTP</label>
-                        <div class="otp-inputs">
-                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
-                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
-                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
-                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
-                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
-                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                        <label class="form-label">Password</label>
+                        <div class="password-input">
+                            <input type="password" class="form-input" id="login-password" placeholder="Enter your password" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('login-password', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
-                        <div class="error-message" id="login-otp-error">Invalid OTP. Please try again.</div>
+                        <div class="error-message" id="login-password-error">Invalid credentials</div>
                     </div>
-                    <button type="button" class="auth-btn" onclick="verifyLoginOTP()">Verify OTP</button>
-                    <div class="resend-otp">
-                        Didn't receive OTP? <a onclick="resendLoginOTP()">Resend</a>
-                        <span class="timer" id="login-timer"></span>
-                    </div>
-                </div>
+                    <button type="submit" class="auth-btn">Login</button>
+                </form>
             </div>
             <!-- Register Tab -->
             <div class="tab-content" id="register-content" style="display: none;">
-                <form id="register-form" class="auth-form" onsubmit="handleRegisterPhone(event)">
+                <form id="register-form" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" id="register-name" placeholder="Enter your full name" required>
+                    </div>
                     <div class="form-group">
                         <label class="form-label">Phone Number</label>
                         <input type="tel" class="form-input" id="register-phone" placeholder="Enter your phone number" required pattern="[0-9]{10}">
                         <div class="error-message" id="register-phone-error">Please enter a valid 10-digit phone number</div>
                     </div>
-                    <button type="submit" class="auth-btn">Continue</button>
-                </form>
-                <div id="register-otp-section" class="otp-section">
                     <div class="form-group">
-                        <label class="form-label">Enter OTP</label>
-                        <div class="otp-inputs">
-                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
-                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
-                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
-                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
-                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
-                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                        <label class="form-label">Password</label>
+                        <div class="password-input">
+                            <input type="password" class="form-input" id="register-password" placeholder="Create a password" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('register-password', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
-                        <div class="error-message" id="register-otp-error">Invalid OTP. Please try again.</div>
                     </div>
-                    <button type="button" class="auth-btn" onclick="verifyRegisterOTP()">Verify OTP</button>
-                    <div class="resend-otp">
-                        Didn't receive OTP? <a onclick="resendRegisterOTP()">Resend</a>
-                        <span class="timer" id="register-timer"></span>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <div class="password-input">
+                            <input type="password" class="form-input" id="register-confirm-password" placeholder="Confirm your password" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('register-confirm-password', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
+                    <button type="submit" class="auth-btn">Sign Up</button>
+                </form>
             </div>
         </div>
     </div>
     <script>
+        const API_BASE = 'https://canteen-management-system-production-bfe6.up.railway.app';
+
         // Tab switching logic
         document.getElementById('login-tab').onclick = function() {
             this.classList.add('active');
@@ -265,105 +238,112 @@
             document.getElementById('register-content').style.display = '';
         };
 
-        // Login OTP logic
-        let loginOTPTimer;
-        function handleLoginPhone(event) {
-            event.preventDefault();
+        // Login form handler
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
             const phone = document.getElementById('login-phone').value;
-            if (phone !== '9702086462') {
-                document.getElementById('login-phone-error').textContent = 'Only test number 9702086462 is allowed.';
-                document.getElementById('login-phone-error').style.display = 'block';
-                return;
-            }
-            document.getElementById('login-phone-error').style.display = 'none';
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('login-otp-section').style.display = 'block';
-            startLoginOTPTimer();
-        }
-        function verifyLoginOTP() {
-            const otpInputs = document.querySelectorAll('#login-otp-section .otp-input');
-            const otp = Array.from(otpInputs).map(input => input.value).join('');
-            if (otp !== '111111') {
-                document.getElementById('login-otp-error').style.display = 'block';
-                return;
-            }
-            document.getElementById('login-otp-error').style.display = 'none';
-            window.location.href = 'home.html';
-        }
-        function resendLoginOTP() {
-            if (loginOTPTimer) clearInterval(loginOTPTimer);
-            startLoginOTPTimer();
-        }
-        function startLoginOTPTimer() {
-            let timeLeft = 30;
-            const timerElement = document.getElementById('login-timer');
-            timerElement.textContent = ` (${timeLeft}s)`;
-            loginOTPTimer = setInterval(() => {
-                timeLeft--;
-                timerElement.textContent = ` (${timeLeft}s)`;
-                if (timeLeft <= 0) {
-                    clearInterval(loginOTPTimer);
-                    timerElement.textContent = '';
-                }
-            }, 1000);
-        }
+            const password = document.getElementById('login-password').value;
 
-        // Register OTP logic
-        let registerOTPTimer;
-        function handleRegisterPhone(event) {
-            event.preventDefault();
-            const phone = document.getElementById('register-phone').value;
-            if (phone !== '9702086462') {
-                document.getElementById('register-phone-error').textContent = 'Only test number 9702086462 is allowed.';
-                document.getElementById('register-phone-error').style.display = 'block';
-                return;
-            }
-            document.getElementById('register-phone-error').style.display = 'none';
-            document.getElementById('register-form').style.display = 'none';
-            document.getElementById('register-otp-section').style.display = 'block';
-            startRegisterOTPTimer();
-        }
-        function verifyRegisterOTP() {
-            const otpInputs = document.querySelectorAll('#register-otp-section .otp-input');
-            const otp = Array.from(otpInputs).map(input => input.value).join('');
-            if (otp !== '111111') {
-                document.getElementById('register-otp-error').style.display = 'block';
-                return;
-            }
-            document.getElementById('register-otp-error').style.display = 'none';
-            window.location.href = 'home.html';
-        }
-        function resendRegisterOTP() {
-            if (registerOTPTimer) clearInterval(registerOTPTimer);
-            startRegisterOTPTimer();
-        }
-        function startRegisterOTPTimer() {
-            let timeLeft = 30;
-            const timerElement = document.getElementById('register-timer');
-            timerElement.textContent = ` (${timeLeft}s)`;
-            registerOTPTimer = setInterval(() => {
-                timeLeft--;
-                timerElement.textContent = ` (${timeLeft}s)`;
-                if (timeLeft <= 0) {
-                    clearInterval(registerOTPTimer);
-                    timerElement.textContent = '';
-                }
-            }, 1000);
-        }
+            try {
+                const response = await fetch(`${API_BASE}/api/sellers/login/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone: `+91${phone}`,
+                        password
+                    })
+                });
 
-        // OTP input auto-focus
-        document.querySelectorAll('.otp-input').forEach((input, idx, arr) => {
-            input.addEventListener('input', function() {
-                if (this.value.length === 1 && idx < arr.length - 1) {
-                    arr[idx + 1].focus();
+                let data;
+                try {
+                    const text = await response.text();
+                    data = text ? JSON.parse(text) : {};
+                } catch (e) {
+                    data = { detail: 'Invalid response from server' };
                 }
-            });
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Backspace' && !this.value && idx > 0) {
-                    arr[idx - 1].focus();
+
+                if (response.ok) {
+                    localStorage.setItem('seller_access', data.access || 'token');
+                    localStorage.setItem('seller_refresh', data.refresh || 'refresh_token');
+                    localStorage.setItem('seller', JSON.stringify({
+                        phone: phone,
+                        user_type: 'seller'
+                    }));
+                    window.location.href = 'home.html';
+                } else {
+                    document.getElementById('login-password-error').textContent = data.detail || 'Invalid phone number or password';
+                    document.getElementById('login-password-error').style.display = 'block';
                 }
-            });
+            } catch (error) {
+                console.error('Login Error:', error);
+                document.getElementById('login-password-error').textContent = 'An error occurred. Please try again.';
+                document.getElementById('login-password-error').style.display = 'block';
+            }
         });
+
+        // Register form handler
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fullname = document.getElementById('register-name').value;
+            const phone = document.getElementById('register-phone').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/sellers/register/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fullname,
+                        phone: `+91${phone}`,
+                        password
+                    })
+                });
+
+                let data;
+                try {
+                    const text = await response.text();
+                    data = text ? JSON.parse(text) : {};
+                } catch (e) {
+                    data = { detail: 'Invalid response from server' };
+                }
+
+                if (response.ok) {
+                    localStorage.setItem('seller_access', data.access || 'token');
+                    localStorage.setItem('seller_refresh', data.refresh || 'refresh_token');
+                    localStorage.setItem('seller', JSON.stringify({
+                        fullname: fullname,
+                        phone: phone,
+                        user_type: 'seller'
+                    }));
+                    alert('Account created successfully!');
+                    window.location.href = 'home.html';
+                } else {
+                    alert(data.detail || 'Registration failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Registration Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+
+        // Toggle password visibility
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+            button.querySelector('i').classList.toggle('fa-eye');
+            button.querySelector('i').classList.toggle('fa-eye-slash');
+        }
     </script>
 </body>
-</html> 
+</html>

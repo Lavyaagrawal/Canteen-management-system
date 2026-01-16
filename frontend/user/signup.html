@@ -160,10 +160,11 @@
   .phone-input input:focus {
     outline: none;
   }
-
   </style>
 
   <script>
+  const API_BASE = 'https://canteen-management-system-production-bfe6.up.railway.app';
+
   document.getElementById('signup-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const fullname = document.getElementById('fullname').value;
@@ -175,7 +176,6 @@
     // Test account check
     if (phone === '9702086462' && fullname === 'Adarsh Ananda Khot' && 
         studentId === 'ADT23SOCB0044' && password === 'Chess07@') {
-      // Simulate successful registration for test account
       localStorage.setItem('access', 'test_token');
       localStorage.setItem('refresh', 'test_refresh_token');
       localStorage.setItem('user', JSON.stringify({
@@ -196,8 +196,6 @@
 
     // Direct registration without OTP
     try {
-      // Use Railway backend URL directly
-      const API_BASE = 'https://canteen-management-system-production-bfe6.up.railway.app';
       const response = await fetch(`${API_BASE}/api/users/register/`, {
         method: 'POST',
         headers: {
@@ -242,7 +240,7 @@
       }
     } catch (error) {
       console.error('Registration Error:', error);
-      alert(`Network error: ${error.message}. Please check:\n1. Backend is running\n2. CORS is configured\n3. Check browser console for details.`);
+      alert(`Network error: ${error.message}. Please check console for details.`);
     }
   });
 
@@ -258,5 +256,4 @@
   });
   </script>
 </body>
-</html> <!-- Deployment trigger Fri Jan 16 12:57:10 IST 2026 -->
-<!-- Force redeploy 1768549849 -->
+</html>
