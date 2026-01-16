@@ -4,16 +4,23 @@ const routes = require('./routes');
 
 const app = express();
 
-// Handle OPTIONS requests FIRST - before CORS middleware
-app.options('*', (req, res) => {
+// CORS Configuration - MUST be first middleware
+app.use((req, res, next) => {
+  // Set CORS headers for all requests
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
-  res.header('Access-Control-Max-Age', '86400'); // 24 hours
-  res.sendStatus(200);
+  res.header('Access-Control-Max-Age', '86400');
+  
+  // Handle preflight OPTIONS requests
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  
+  next();
 });
 
-// CORS Configuration - Allow all origins
+// Also use cors middleware as backup
 app.use(cors({
   origin: '*',
   credentials: false,
@@ -67,6 +74,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log('CORS configured to allow all origins');
 });
 
 module.exports = app;
