@@ -252,10 +252,13 @@
           startResendTimer();
           alert('OTP sent to your phone number');
         } else {
-          alert('Failed to send OTP. Please try again.');
+          const errorData = await response.json().catch(() => ({}));
+          console.error('OTP Error:', errorData, 'Status:', response.status);
+          alert(errorData.detail || errorData.message || `Failed to send OTP. Status: ${response.status}. Please check console for details.`);
         }
       } catch (error) {
-        alert('An error occurred. Please try again.');
+        console.error('OTP Request Error:', error);
+        alert(`An error occurred: ${error.message}. Please check console for details.`);
       }
       return;
     }
