@@ -37,30 +37,22 @@ exports.sendOTP = async (req, res) => {
 
 exports.register = async (req, res) => {
   try {
-    const { phone, otp, fullname, password, student_id } = req.body;
+    const { phone, fullname, password, student_id } = req.body;
     
-    // Verify OTP
-    const storedOTP = otpStore.get(phone);
-    if (!storedOTP || storedOTP.otp !== otp) {
+    // Validate required fields
+    if (!phone || !fullname || !password || !student_id) {
       return res.status(400).json({ 
-        detail: 'Invalid OTP' 
+        detail: 'All fields are required (phone, fullname, password, student_id)' 
       });
     }
     
-    if (Date.now() > storedOTP.expiresAt) {
-      otpStore.delete(phone);
-      return res.status(400).json({ 
-        detail: 'OTP expired' 
-      });
-    }
-    
-    // TODO: Create user in database
+    // TODO: Check if user already exists in database
     // TODO: Hash password with bcrypt
+    // TODO: Create user in database
     // TODO: Generate JWT tokens
     
     // For now, return success (implement database logic later)
-    // Clear OTP after successful verification
-    otpStore.delete(phone);
+    console.log('New user registration:', { phone, fullname, student_id });
     
     // Temporary response - implement proper user creation
     res.status(201).json({
@@ -71,7 +63,7 @@ exports.register = async (req, res) => {
   } catch (error) {
     console.error('Register Error:', error);
     res.status(500).json({ 
-      detail: 'Registration failed' 
+      detail: 'Registration failed: ' + error.message 
     });
   }
 };

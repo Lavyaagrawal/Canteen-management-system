@@ -50,13 +50,6 @@
             <input type="tel" id="phone" name="phone" required placeholder="Enter your phone number" pattern="[0-9]{10}" maxlength="10">
           </div>
         </div>
-        <div class="form-group otp-group" style="display: none;">
-          <label for="otp">Enter OTP</label>
-          <div class="otp-input">
-            <input type="text" id="otp" name="otp" placeholder="Enter 6-digit OTP" maxlength="6" pattern="[0-9]{6}">
-            <button type="button" class="resend-otp" disabled>Resend OTP</button>
-          </div>
-        </div>
         <div class="form-group">
           <label for="password">Password</label>
           <div class="password-input">
@@ -168,39 +161,9 @@
     outline: none;
   }
 
-  .otp-input {
-    display: flex;
-    gap: 1rem;
-  }
-
-  .otp-input input {
-    flex: 1;
-    padding: 0.8rem;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    font-size: 1rem;
-  }
-
-  .resend-otp {
-    padding: 0.8rem 1.5rem;
-    background: #f5f5f5;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-
-  .resend-otp:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
   </style>
 
   <script>
-  let otpSent = false;
-  let resendTimer = 60;
-  let resendInterval;
-
   document.getElementById('signup-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const fullname = document.getElementById('fullname').value;
@@ -208,8 +171,6 @@
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirm-password').value;
     const studentId = document.getElementById('student-id').value;
-    const otpGroup = document.querySelector('.otp-group');
-    const otp = document.getElementById('otp').value;
 
     // Test account check
     if (phone === '9702086462' && fullname === 'Adarsh Ananda Khot' && 
@@ -233,41 +194,9 @@
       return;
     }
 
-    if (!otpSent) {
-      // Send OTP
-      try {
-        // Use Railway backend URL directly (bypassing Vercel rewrites)
-        const API_BASE = 'https://canteen-management-system-production-bfe6.up.railway.app';
-        const response = await fetch(`${API_BASE}/api/users/send-otp/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ 
-            phone: `+91${phone}`
-          })
-        });
-
-        if (response.ok) {
-          otpSent = true;
-          otpGroup.style.display = 'block';
-          startResendTimer();
-          alert('OTP sent to your phone number');
-        } else {
-          const errorData = await response.json().catch(() => ({}));
-          console.error('OTP Error:', errorData, 'Status:', response.status);
-          alert(errorData.detail || errorData.message || `Failed to send OTP. Status: ${response.status}. Please check console for details.`);
-        }
-      } catch (error) {
-        console.error('OTP Request Error:', error);
-        alert(`An error occurred: ${error.message}. Please check console for details.`);
-      }
-      return;
-    }
-
-    // Verify OTP and create account
+    // Direct registration without OTP
     try {
-      // Use Railway backend URL directly (bypassing Vercel rewrites)
+      // Use Railway backend URL directly
       const API_BASE = 'https://canteen-management-system-production-bfe6.up.railway.app';
       const response = await fetch(`${API_BASE}/api/users/register/`, {
         method: 'POST',
@@ -278,41 +207,31 @@
           fullname,
           phone: `+91${phone}`,
           password,
-          student_id: studentId,
-          otp
+          student_id: studentId
         })
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem('access', data.access);
-        localStorage.setItem('refresh', data.refresh);
+        localStorage.setItem('access', data.access || 'token');
+        localStorage.setItem('refresh', data.refresh || 'refresh_token');
+        localStorage.setItem('user', JSON.stringify({
+          fullname: fullname,
+          phone: phone,
+          student_id: studentId,
+          user_type: 'user'
+        }));
+        alert('Account created successfully!');
         window.location.href = 'index.html';
       } else {
-        alert(data.detail || 'Registration failed');
+        alert(data.detail || data.message || 'Registration failed. Please try again.');
       }
     } catch (error) {
-      alert('An error occurred. Please try again.');
+      console.error('Registration Error:', error);
+      alert('An error occurred. Please check console for details.');
     }
   });
-
-  function startResendTimer() {
-    const resendButton = document.querySelector('.resend-otp');
-    resendButton.disabled = true;
-    
-    resendInterval = setInterval(() => {
-      resendTimer--;
-      resendButton.textContent = `Resend OTP (${resendTimer}s)`;
-      
-      if (resendTimer <= 0) {
-        clearInterval(resendInterval);
-        resendButton.disabled = false;
-        resendButton.textContent = 'Resend OTP';
-        resendTimer = 60;
-      }
-    }, 1000);
-  }
 
   // Toggle password visibility
   document.querySelectorAll('.toggle-password').forEach(button => {
