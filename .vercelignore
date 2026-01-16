@@ -1,0 +1,8 @@
+node_modules
+.git
+.env
+.env.local
+canteen-backend
+*.log
+.DS_Store
+yearn.lock
