@@ -236,7 +236,9 @@
     if (!otpSent) {
       // Send OTP
       try {
-        const response = await fetch('/api/users/send-otp/', {
+        // Use Railway backend URL directly (bypassing Vercel rewrites)
+        const API_BASE = 'https://canteen-management-system-production-bfe6.up.railway.app';
+        const response = await fetch(`${API_BASE}/api/users/send-otp/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -265,7 +267,9 @@
 
     // Verify OTP and create account
     try {
-      const response = await fetch('/api/users/register/', {
+      // Use Railway backend URL directly (bypassing Vercel rewrites)
+      const API_BASE = 'https://canteen-management-system-production-bfe6.up.railway.app';
+      const response = await fetch(`${API_BASE}/api/users/register/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
